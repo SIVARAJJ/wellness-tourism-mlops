@@ -83,8 +83,17 @@ jobs:
 
       - name: Start MLflow Server
         run: |
-          nohup mlflow ui --host 127.0.0.1 --port 5000 --backend-store-uri ./mlruns > mlflow.log 2>&1 &
-          sleep 5
+          mlflow server --host 127.0.0.1 --port 5000 --backend-store-uri sqlite:///mlflow.db --default-artifact-root ./mlartifacts > mlflow.log 2>&1 &
+          for i in {1..30}; do
+            if curl -s http://127.0.0.1:5000/health; then
+              echo "MLflow server is ready"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "MLflow server failed to start"
+          cat mlflow.log
+          exit 1
 
       - name: Model Building
         run: python model_building/train.py
