@@ -105,8 +105,11 @@ model_pipeline = make_pipeline(
 # 9. Configure MLflow experiment
 # ==========================================
 
-mlflow.set_experiment("Wellness_Tourism_Prediction")
+mlflow.set_tracking_uri(
+    os.getenv("MLFLOW_TRACKING_URI", "file:./mlruns")
+)
 
+mlflow.set_experiment("Wellness_Tourism_Prediction")
 
 # ==========================================
 # 10. Hyperparameter tuning and experiment tracking
