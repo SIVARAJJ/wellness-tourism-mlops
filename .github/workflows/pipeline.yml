@@ -100,13 +100,18 @@ jobs:
         env:
           MLFLOW_TRACKING_URI: http://127.0.0.1:5000
 
+      
       - name: Upload MLflow Logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: mlflow-logs
-          path: mlruns/
+          path: |
+            mlflow.db
+            mlartifacts/
+            mlflow.log
           if-no-files-found: ignore
+
 
       - name: Commit Trained Model
         run: |
