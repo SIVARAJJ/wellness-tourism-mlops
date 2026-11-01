@@ -22,15 +22,15 @@ from pathlib import Path
 # 2. Load training and testing data
 # ==========================================
 
+from pathlib import Path
+
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 
 Xtrain = pd.read_csv(PROJECT_DIR / "Xtrain.csv")
 Xtest = pd.read_csv(PROJECT_DIR / "Xtest.csv")
+
 ytrain = pd.read_csv(PROJECT_DIR / "ytrain.csv").squeeze()
 ytest = pd.read_csv(PROJECT_DIR / "ytest.csv").squeeze()
-
-print("Training data:", Xtrain.shape)
-print("Testing data:", Xtest.shape)
 
 
 # ==========================================
@@ -109,7 +109,13 @@ mlflow.set_tracking_uri(
     os.getenv("MLFLOW_TRACKING_URI", "file:./mlruns")
 )
 
+# Configure MLflow to use SQLite as the tracking backend
+MLFLOW_DB = PROJECT_DIR / "mlflow.db"
+
+mlflow.set_tracking_uri(f"sqlite:///{MLFLOW_DB.as_posix()}")
+
 mlflow.set_experiment("Wellness_Tourism_Prediction")
+
 
 # ==========================================
 # 10. Hyperparameter tuning and experiment tracking
@@ -227,11 +233,12 @@ with mlflow.start_run(run_name="XGBoost_GridSearch"):
 # 12. Save the best trained model
 # ==========================================
 
-MODEL_DIR = PROJECT_DIR / "deployment"
-MODEL_DIR.mkdir(parents=True, exist_ok=True)
+DEPLOYMENT_DIR = PROJECT_DIR / "deployment"
+DEPLOYMENT_DIR.mkdir(parents=True, exist_ok=True)
 
-MODEL_PATH = MODEL_DIR / "best_model.joblib"
+MODEL_PATH = DEPLOYMENT_DIR / "best_model.joblib"
+
 joblib.dump(best_model, MODEL_PATH)
 
 print("\nMODEL SAVED SUCCESSFULLY")
-print(f"Location: {MODEL_PATH}")
+print("Location:", MODEL_PATH)
