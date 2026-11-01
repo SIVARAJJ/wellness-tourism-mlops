@@ -26,7 +26,7 @@ X_train, X_test, y_train, y_test = train_test_split(
     stratify=y
 )
 
-# Save the splits in the project root directory
+# Save the prepared datasets in the project root directory
 X_train.to_csv(PROJECT_DIR / "Xtrain.csv", index=False)
 X_test.to_csv(PROJECT_DIR / "Xtest.csv", index=False)
 y_train.to_csv(PROJECT_DIR / "ytrain.csv", index=False)
